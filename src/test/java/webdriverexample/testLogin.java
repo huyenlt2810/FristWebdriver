@@ -28,7 +28,7 @@ public class testLogin {
             e.printStackTrace();
         }
         txtUserName.clear();
-        String userNameError = txtUserName.getAttribute("error");
+        String userNameError = driver.findElement(By.cssSelector("div.mod-login-input-loginName span")).getText();
         String userNameErrorColor = txtUserName.getCssValue("border-color");
         System.out.printf(userNameErrorColor);
 
