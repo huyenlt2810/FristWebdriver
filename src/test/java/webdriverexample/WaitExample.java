@@ -3,6 +3,7 @@ package webdriverexample;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,8 +38,8 @@ public class WaitExample {
         WebDriverWait wait = new WebDriverWait(this.driver, 15);
         //explicit wait , chờ 1 điều kiện nào đó xảy ra rồi mới chạy tiếp
 
-        WebElement lbMesage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.alert div.body-message")));
-        System.out.println(lbMesage.getText());
+        WebElement lbMesage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.alert b")));
+        System.out.println(this.driver.findElement(By.cssSelector("div.body-message>b")).getText());
         Assert.assertEquals("Tên đăng nhập hoặc Mật khẩu không đúng.", lbMesage.getText());
 
     }
