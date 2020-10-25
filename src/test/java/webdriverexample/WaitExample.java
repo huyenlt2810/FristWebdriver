@@ -27,6 +27,8 @@ public class WaitExample {
 
     @Test
     public void TryToLogin () {
+        WebDriverWait wait = new WebDriverWait(this.driver, 15);
+        //explicit wait , chờ 1 điều kiện nào đó xảy ra rồi mới chạy tiếp
         WebElement txtUserName = this.driver.findElement(By.cssSelector("input[type = email]"));
         WebElement txtPassWord = this.driver.findElement(By.cssSelector("input[type = password]"));
         WebElement btnLogin = this.driver.findElement(By.cssSelector("div.credential button"));
@@ -35,12 +37,17 @@ public class WaitExample {
         txtPassWord.sendKeys("123456");
         btnLogin.click();
 
-        WebDriverWait wait = new WebDriverWait(this.driver, 15);
-        //explicit wait , chờ 1 điều kiện nào đó xảy ra rồi mới chạy tiếp
 
-        WebElement lbMesage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.alert b")));
+
+//        WebElement lbMesage = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.alert b")));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        WebElement lbMessage = this.driver.findElement(By.cssSelector("div.alert b"));
         System.out.println(this.driver.findElement(By.cssSelector("div.body-message>b")).getText());
-        Assert.assertEquals("Tên đăng nhập hoặc Mật khẩu không đúng.", lbMesage.getText());
+        Assert.assertEquals("Tên đăng nhập hoặc Mật khẩu không đúng.", lbMessage.getText());
 
     }
 }

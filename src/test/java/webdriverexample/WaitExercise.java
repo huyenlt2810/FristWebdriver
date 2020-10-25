@@ -1,5 +1,6 @@
 package webdriverexample;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -19,34 +20,53 @@ public class WaitExercise {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/webdrivers/chromedriver86");
         this.driver = new ChromeDriver();
         this.driver.get("https://www.fido.ca/");
+        this.driver.manage().window().maximize();
         this.driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+    public void login () {
+        WebDriverWait wait = new WebDriverWait(this.driver, 15);
+        WebElement btnSignin = this.driver.findElement(By.cssSelector("a.-login>span.m-navLink__caption"));
+        btnSignin.click();
+        this.driver.switchTo().frame(0);
+        WebElement titleLogin = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("span.modal-title")));
     }
     @Test
     public void LoginWithBlankUserNamePassword () {
+        login();
+        WebElement btnLogin = this.driver.findElement(By.cssSelector("div.signin button.primary-button"));
+        btnLogin.click();
+        WebElement passWordError = this.driver.findElement(By.cssSelector("div.btn-show-hide-box small"));
+        Assert.assertEquals("Please enter your password.", passWordError.getText());
+
+    }
+    @Test
+    public void checkPasswordIsShow () {
+        login();
+        WebElement txtPassword = this.driver.findElement(By.cssSelector("input[id=password]"));
+        WebElement btnShow = this.driver.findElement(By.cssSelector("div.btn-show-hide-box button"));
+        txtPassword.sendKeys("12345");
+        if (btnShow.getText().equalsIgnoreCase("SHOW")) {
+            btnShow.click();
+        }
+        System.out.printf(txtPassword.getAttribute("type"));
+        Assert.assertEquals("text", txtPassword.getAttribute("type"));
+
+    }
+    @Test
+    public void loginWithIncorrectUserName () {
         WebDriverWait wait = new WebDriverWait(this.driver, 15);
-//        WebElement btnSignin = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a.-login>span.m-navLink__caption")));
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        WebElement btnSignin = this.driver.findElement(By.cssSelector("a.-login>span.m-navLink__caption"));
-        btnSignin.click();
+        login();
+        WebElement txtUserName = this.driver.findElement(By.cssSelector("input[id=username]"));
+        WebElement txtPassword = this.driver.findElement(By.cssSelector("input[id=password]"));
+        WebElement btnLogin = this.driver.findElement(By.cssSelector("div.signin button.primary-button"));
+        txtUserName.sendKeys("abcdjgg");
+        txtPassword.sendKeys("12345");
+        btnLogin.click();
+        WebElement loginError = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.font-normal")));
+        System.out.printf(loginError.getText());
+        String expected = "That username isn't recognized. Please try again.\n" + "\n" + "Need help? Contact us.";
+        Assert.assertEquals(expected,loginError.getText());
 
-//        WebElement titleLogin = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("span.modal-title")));
-//        System.out.println(titleLogin.getText());
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-//        WebElement txtUserName = this.driver.findElement(By.cssSelector("input[id=username]"));
-//        this.driver.switchTo().activeElement().findElement(By.cssSelector("div.flex-item>button.primary-button")).click();
-//        WebElement txtPassword = this.driver.findElement(By.cssSelector("input[id=password]"));
-        this.driver.findElement(By.cssSelector("div.signin button.primary-button")).click();
-//        System.out.println(btnLogin.getText());
-//        btnLogin.click();
 
     }
 }
